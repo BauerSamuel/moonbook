@@ -3,29 +3,32 @@ using System;
 
 namespace moonbook.Models
 {
-  class Planet
+  class Planet : IDestination
   {
-    public string Name { get; private set; }
-    string Description { get; set; }
+    public string Name { get; set; }
+
+    public string Description { get; set; }
     List<string> GuestBook { get; set; }
 
     Moon Moon { get; set; }
 
-    Dictionary<Direction, Planet> NearbyPlanets { get; set; }
+    Dictionary<Direction, IDestination> NearbyDestinations { get; set; }
 
-    public void AddNearbyPlanet(Direction direction, Planet planet)
+
+
+    public void AddNearbyDest(Direction dir, IDestination dest)
     {
-      NearbyPlanets.Add(direction, planet);
+      NearbyDestinations.Add(dir, dest);
     }
 
-    public Planet Travel(Direction dir)
+    public IDestination TravelToDest(Direction dir)
     {
-      if (NearbyPlanets.ContainsKey(dir))
+      if (NearbyDestinations.ContainsKey(dir))
       {
-        return NearbyPlanets[dir];
+        return NearbyDestinations[dir];
       }
       Console.WriteLine("Your ship can't travel there. You suck.");
-      return this;
+      return (IDestination)this;
     }
 
     public void SignBook(string name)
@@ -42,19 +45,21 @@ namespace moonbook.Models
       });
     }
 
-    public Planet(string name, string desc, Moon moon = null)
+    public Planet(string name, string desc)
     {
       GuestBook = new List<string>();
+      NearbyDestinations = new Dictionary<Direction, IDestination>();
       Name = name;
       Description = desc;
-      Moon = moon;
+
     }
 
   }
   public enum Direction
   {
     next,
-    previous
+    previous,
+    moon
   }
 
 }
